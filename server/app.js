@@ -95,9 +95,17 @@ app.use(
   })
 );
 
-// Test endpoint to check database connection
+// Health check and initialize database
+let tablesInitialized = false;
+
 app.get("/api/v1/health", async (req, res) => {
   try {
+    // Initialize tables on first call
+    if (!tablesInitialized) {
+      await createTables();
+      tablesInitialized = true;
+    }
+    
     const result = await database.query("SELECT NOW()");
     res.json({ 
       success: true, 
@@ -116,8 +124,6 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/order", orderRouter);
-
-createTables();
 
 app.use(errorMiddleware);
 
