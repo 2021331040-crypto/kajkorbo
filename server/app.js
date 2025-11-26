@@ -95,31 +95,16 @@ app.use(
   })
 );
 
-// Health check and initialize database
-let tablesInitialized = false;
-
-app.get("/api/v1/health", async (req, res) => {
-  try {
-    // Initialize tables on first call
-    if (!tablesInitialized) {
-      await createTables();
-      tablesInitialized = true;
-    }
-    
-    const result = await database.query("SELECT NOW()");
-    res.json({ 
-      success: true, 
-      message: "Database connected", 
-      time: result.rows[0].now 
-    });
-  } catch (error) {
-    res.status(500).json({ 
-      success: false, 
-      error: error.message 
-    });
-  }
+// Simple health check
+app.get("/api/v1/health", (req, res) => {
+  res.json({ 
+    success: true, 
+    message: "Server is running",
+    timestamp: new Date().toISOString()
+  });
 });
 
+// API Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/admin", adminRouter);

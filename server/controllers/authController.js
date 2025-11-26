@@ -8,8 +8,25 @@ import { generateEmailTemplate } from "../utils/generateForgotPasswordEmailTempl
 import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
 import { v2 as cloudinary } from "cloudinary";
+import { createTables } from "../utils/createTables.js";
+
+let tablesInitialized = false;
+
+const initializeTables = async () => {
+  if (!tablesInitialized) {
+    try {
+      await createTables();
+      tablesInitialized = true;
+    } catch (error) {
+      console.error("Error initializing tables:", error);
+      // Continue even if initialization fails - tables might already exist
+    }
+  }
+};
 
 export const register = catchAsyncErrors(async (req, res, next) => {
+  await initializeTables();
+  
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
     return next(new ErrorHandler("Please provide all required fields.", 400));
