@@ -95,6 +95,23 @@ app.use(
   })
 );
 
+// Test endpoint to check database connection
+app.get("/api/v1/health", async (req, res) => {
+  try {
+    const result = await database.query("SELECT NOW()");
+    res.json({ 
+      success: true, 
+      message: "Database connected", 
+      time: result.rows[0].now 
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/admin", adminRouter);
