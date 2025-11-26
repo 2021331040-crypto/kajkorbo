@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "projects": [
+    {
+      "name": "kajkorbo-client",
+      "path": "client",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist",
+      "devCommand": "npm run dev"
+    },
+    {
+      "name": "kajkorbo-dashboard",
+      "path": "dashboard",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist",
+      "devCommand": "npm run dev"
+    },
+    {
+      "name": "kajkorbo-server",
+      "path": "server",
+      "buildCommand": "npm install",
+      "startCommand": "npm start"
+    }
+  ]
+}
