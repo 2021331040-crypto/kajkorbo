@@ -2,11 +2,8 @@ import pkg from "pg";
 const { Client } = pkg;
 
 const database = new Client({
-  user: "postgres",
-  host: "localhost",
-  database: "mern_ecommerce_store",
-  password: "123456",
-  port: 5432,
+  connectionString: process.env.DATABASE_URL || "postgresql://postgres:xKcmcHvMsrsbIKwgGPnXrZWwaTuPnczk@postgres.railway.internal:5432/railway",
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
 
 try {
