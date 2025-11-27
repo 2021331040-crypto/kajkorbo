@@ -1,7 +1,13 @@
 import Stripe from "stripe";
 
+// Initialize Stripe with secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+/**
+ * Generate Stripe Payment Intent
+ * @param {number} amount - Amount in USD
+ * @returns {Promise<Object>} Payment intent details
+ */
 export const generatePaymentIntent = async (amount) => {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
