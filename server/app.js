@@ -8,7 +8,8 @@ import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import authRouter from "./router/authRoutes.js";
 import productRouter from "./router/productRoutes.js";
 import adminRouter from "./router/adminRoutes.js";
-import orderRouter from "./router/orderRoutes.js";
+// Lazy load order routes to avoid module resolution issues
+let orderRouter = null;
 import Stripe from "stripe";
 import database from "./database/db.js";
 
@@ -108,7 +109,20 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/admin", adminRouter);
-app.use("/api/v1/order", orderRouter);
+
+// Lazy load order router on first request
+app.use("/api/v1/order", async (req, res, next) => {
+  if (!orderRouter) {
+    try {
+      const module = await import("./router/orderRoutes.js");
+      orderRouter = module.default;
+    } catch (error) {
+      console.error("Failed to load order routes:", error);
+      return res.status(500).json({ error: "Order service temporarily unavailable" });
+    }
+  }
+  orderRouter(req, res, next);
+});
 
 app.use(errorMiddleware);
 
