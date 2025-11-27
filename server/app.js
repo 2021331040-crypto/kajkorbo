@@ -8,6 +8,7 @@ import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import authRouter from "./router/authRoutes.js";
 import productRouter from "./router/productRoutes.js";
 import adminRouter from "./router/adminRoutes.js";
+import { test } from "./routes-test.js";
 // Lazy load order routes to avoid module resolution issues
 let orderRouter = null;
 import Stripe from "stripe";
@@ -100,7 +101,7 @@ app.use(
 app.get("/api/v1/health", (req, res) => {
   res.json({ 
     success: true, 
-    message: "Server is running",
+    message: test(),
     timestamp: new Date().toISOString()
   });
 });
