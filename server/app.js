@@ -9,8 +9,6 @@ import authRouter from "./router/authRoutes.js";
 import productRouter from "./router/productRoutes.js";
 import adminRouter from "./router/adminRoutes.js";
 import { test } from "./routes-test.js";
-// Lazy load order routes to avoid module resolution issues
-let orderRouter = null;
 import Stripe from "stripe";
 import database from "./database/db.js";
 
@@ -110,20 +108,6 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/admin", adminRouter);
-
-// Order routes - lazy loaded only when accessed
-app.use("/api/v1/order", async (req, res, next) => {
-  try {
-    if (!orderRouter) {
-      const module = await import("./router/orderRoutes.js");
-      orderRouter = module.default;
-    }
-    return orderRouter(req, res, next);
-  } catch (error) {
-    console.error("Error loading order routes:", error);
-    res.status(500).json({ error: "Order service temporarily unavailable", details: error.message });
-  }
-});
 
 app.use(errorMiddleware);
 
