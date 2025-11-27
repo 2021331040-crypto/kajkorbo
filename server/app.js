@@ -13,8 +13,13 @@ config({ path: "./config/config.env" });
 
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL, process.env.DASHBOARD_URL],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: [
+      process.env.FRONTEND_URL || "https://mernecommercestore-52zk528qt-kamrul-hasans-projects-8fdfd959.vercel.app",
+      process.env.DASHBOARD_URL || "https://mernecommercestore2-ebqmc1q0n-kamrul-hasans-projects-8fdfd959.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:5174"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
   })
 );
