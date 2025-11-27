@@ -111,18 +111,18 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/admin", adminRouter);
 
-// Lazy load order router on first request
+// Order routes - lazy loaded only when accessed
 app.use("/api/v1/order", async (req, res, next) => {
-  if (!orderRouter) {
-    try {
+  try {
+    if (!orderRouter) {
       const module = await import("./router/orderRoutes.js");
       orderRouter = module.default;
-    } catch (error) {
-      console.error("Failed to load order routes:", error);
-      return res.status(500).json({ error: "Order service temporarily unavailable" });
     }
+    return orderRouter(req, res, next);
+  } catch (error) {
+    console.error("Error loading order routes:", error);
+    res.status(500).json({ error: "Order service temporarily unavailable", details: error.message });
   }
-  orderRouter(req, res, next);
 });
 
 app.use(errorMiddleware);
